@@ -114,6 +114,9 @@ final class VarType
             return false;
         }
 
-        return array_keys($array) !== range(0, count($array) - 1);
+        $keys = array_keys($array);
+
+        // Check if all keys are integers and form a sequence starting from 0
+        return $keys !== range(0, count($array) - 1);
     }
 }

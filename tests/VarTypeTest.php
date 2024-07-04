@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Koriym\VarType;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use stdClass;
 
 use function get_class;
@@ -61,7 +62,7 @@ final class VarTypeTest extends TestCase
         $simpleObject = new stdClass();
         $simpleObject->name = 'John Doe';
         $simpleObject->age = 30;
-        $this->assertSame('stdClass', ($this->varType)($simpleObject));
+        $this->assertSame('stdClass{name: string, age: int}', ($this->varType)($simpleObject));
     }
 
     public function testObjectWithProperties(): void
@@ -135,7 +136,7 @@ final class VarTypeTest extends TestCase
             'Array with string keys should be associative' => [['a' => 1, 'b' => 2], true],
             'Array with mix of numeric and string keys should be associative' => [[0 => 'a', 'b' => 'c'], true],
             'Array with non-sequential numeric keys should be associative' => [[1 => 'a', 3 => 'b'], true],
-            'Array with sequential string keys that look like numbers should be associative' => [['0' => 'a', '1' => 'b', '2' => 'c'], true],
+            'Array with sequential string keys that look like numbers should NOT be associative' => [['0' => 'a', '1' => 'b', '2' => 'c'], false], // https://github.com/php/php-src/issues/9029
             'Array with one element and key 0 should not be associative' => [[0 => 'single'], false],
             'Array with one element and non-zero key should be associative' => [[1 => 'single'], true],
         ];
@@ -148,9 +149,10 @@ final class VarTypeTest extends TestCase
 
     private function invokePrivateMethod($object, $methodName, array $parameters = [])
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new ReflectionClass($object::class);
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
+
         return $method->invokeArgs($object, $parameters);
     }
 }
