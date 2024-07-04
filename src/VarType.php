@@ -51,7 +51,6 @@ final class VarType
         foreach ($array as $key => $value) {
             $valueType = $this->__invoke($value);
             if ($isAssociative) {
-                /** @var string|int $key */
                 $types[] = "{$key}: {$valueType}";
             } else {
                 $types[] = $valueType;

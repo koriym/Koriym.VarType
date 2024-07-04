@@ -147,12 +147,13 @@ final class VarTypeTest extends TestCase
         }
     }
 
-    private function invokePrivateMethod($object, $methodName, array $parameters = [])
+    /** @param array<mixed> $parameters */
+    private function invokePrivateMethod(object $object, string $methodName, array $parameters = []): bool
     {
         $reflection = new ReflectionClass($object::class);
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 
-        return $method->invokeArgs($object, $parameters);
+        return (bool) $method->invokeArgs($object, $parameters);
     }
 }
