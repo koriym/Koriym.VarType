@@ -126,4 +126,28 @@ final class VarTypeTest extends TestCase
         ];
         $this->assertSame('array{user: Koriym\VarType\FakeUser{name: string, age: int, roles: array<string>}, settings: array{theme: string, notifications: bool, limits: array<int>}, metadata: null}', ($this->varType)($complexStructure));
     }
+
+    public function testIsAssociativeArray(): void
+    {
+        $testCases = [
+            'empty array' => [[], false],
+            'indexed array' => [[1, 2, 3], false],
+            'associative array' => [['a' => 1, 'b' => 2], true],
+            'mixed array' => [[0 => 'a', 'b' => 'c'], true],
+            'non-sequential keys' => [[1 => 'a', 3 => 'b'], true],
+        ];
+
+        foreach ($testCases as $description => [$input, $expected]) {
+            $result = $this->invokePrivateMethod($this->varType, 'isAssociativeArray', [$input]);
+            $this->assertSame($expected, $result, "Failed asserting that {$description} is " . ($expected ? 'associative' : 'not associative'));
+        }
+    }
+
+    private function invokePrivateMethod($object, $methodName, array $parameters = [])
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+        return $method->invokeArgs($object, $parameters);
+    }
 }
