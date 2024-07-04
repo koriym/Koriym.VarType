@@ -97,18 +97,6 @@ function processUser(array $data): void {
 }
 ```
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This library is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## Support
-
-If you encounter any problems or have any questions, please [open an issue](https://github.com/koriym/var-type/issues/new) on GitHub.
-
 ---
 
 VarType - Unleash the full potential of PHP type information!
