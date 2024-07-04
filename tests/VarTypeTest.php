@@ -130,16 +130,19 @@ final class VarTypeTest extends TestCase
     public function testIsAssociativeArray(): void
     {
         $testCases = [
-            'empty array' => [[], false],
-            'indexed array' => [[1, 2, 3], false],
-            'associative array' => [['a' => 1, 'b' => 2], true],
-            'mixed array' => [[0 => 'a', 'b' => 'c'], true],
-            'non-sequential keys' => [[1 => 'a', 3 => 'b'], true],
+            'Empty array should not be considered associative' => [[], false],
+            'Array with sequential numeric keys should not be associative' => [[1, 2, 3], false],
+            'Array with string keys should be associative' => [['a' => 1, 'b' => 2], true],
+            'Array with mix of numeric and string keys should be associative' => [[0 => 'a', 'b' => 'c'], true],
+            'Array with non-sequential numeric keys should be associative' => [[1 => 'a', 3 => 'b'], true],
+            'Array with sequential string keys that look like numbers should be associative' => [['0' => 'a', '1' => 'b', '2' => 'c'], true],
+            'Array with one element and key 0 should not be associative' => [[0 => 'single'], false],
+            'Array with one element and non-zero key should be associative' => [[1 => 'single'], true],
         ];
 
         foreach ($testCases as $description => [$input, $expected]) {
             $result = $this->invokePrivateMethod($this->varType, 'isAssociativeArray', [$input]);
-            $this->assertSame($expected, $result, "Failed asserting that {$description} is " . ($expected ? 'associative' : 'not associative'));
+            $this->assertSame($expected, $result, $description);
         }
     }
 
