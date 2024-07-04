@@ -8,25 +8,23 @@ use function array_keys;
 use function array_unique;
 use function count;
 use function get_object_vars;
-use function gettype;
 use function implode;
 use function is_array;
 use function is_bool;
 use function is_float;
 use function is_int;
-use function is_null;
 use function is_object;
-use function is_string;
 use function range;
 
 final class VarType
 {
-    public static function dump($value): void
+    /** @psalm-suppress PossiblyUnusedMethod */
+    public static function dump(mixed $value): void
     {
         echo (new self())($value);
     }
 
-    public function __invoke($value): string
+    public function __invoke(mixed $value): string
     {
         if (is_array($value)) {
             return $this->getArrayType($value);
@@ -39,6 +37,7 @@ final class VarType
         return $this->getScalarType($value);
     }
 
+    /** @param array<mixed> $array */
     private function getArrayType(array $array): string
     {
         if (empty($array)) {
@@ -48,9 +47,11 @@ final class VarType
         $isAssociative = $this->isAssociativeArray($array);
         $types = [];
 
+        /** @psalm-suppress  MixedAssignment */
         foreach ($array as $key => $value) {
             $valueType = $this->__invoke($value);
             if ($isAssociative) {
+                /** @var string|int $key */
                 $types[] = "{$key}: {$valueType}";
             } else {
                 $types[] = $valueType;
@@ -68,9 +69,11 @@ final class VarType
 
     private function getObjectType(object $object): string
     {
+        /** @psalm-suppress  MixedAssignment */
         $className = $object::class;
         $properties = [];
 
+        /** @psalm-suppress MixedAssignment */
         foreach (get_object_vars($object) as $key => $value) {
             $valueType = $this->__invoke($value);
             $properties[] = "{$key}: {$valueType}";
@@ -83,7 +86,7 @@ final class VarType
         return "{$className}{" . implode(', ', $properties) . '}';
     }
 
-    private function getScalarType($value): string
+    private function getScalarType(mixed $value): string
     {
         if (is_int($value)) {
             return 'int';
@@ -97,17 +100,14 @@ final class VarType
             return 'bool';
         }
 
-        if (is_string($value)) {
-            return 'string';
-        }
-
-        if (is_null($value)) {
+        if ($value === null) {
             return 'null';
         }
 
-        return gettype($value);
+        return 'string';
     }
 
+    /** @param array<mixed> $array */
     private function isAssociativeArray(array $array): bool
     {
         if (empty($array)) {

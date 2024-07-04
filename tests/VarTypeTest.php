@@ -77,6 +77,7 @@ final class VarTypeTest extends TestCase
     public function testComplexObject(): void
     {
         $object = new class {
+            /** @var array<int>  */
             public array $a = [1, 2, 3];
             public object $b;
 
