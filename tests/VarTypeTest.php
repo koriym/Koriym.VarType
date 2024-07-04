@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Koriym\VarType;
 
-use Koriym\VarType\VarType;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+
+use function get_class;
 
 final class VarTypeTest extends TestCase
 {
@@ -48,15 +50,16 @@ final class VarTypeTest extends TestCase
 
     public function testEmptyObject(): void
     {
-        $emptyObject = new class {};
-        $className = get_class($emptyObject);
+        $emptyObject = new class {
+        };
+        $className = $emptyObject::class;
         $this->assertSame($className, ($this->varType)($emptyObject));
     }
 
     public function testSimpleObject(): void
     {
-        $simpleObject = new \stdClass();
-        $simpleObject->name = "John Doe";
+        $simpleObject = new stdClass();
+        $simpleObject->name = 'John Doe';
         $simpleObject->age = 30;
         $this->assertSame('stdClass', ($this->varType)($simpleObject));
     }
@@ -67,7 +70,7 @@ final class VarTypeTest extends TestCase
             public int $a = 1;
             public string $b = 'string';
         };
-        $className = get_class($object);
+        $className = $object::class;
         $this->assertSame("{$className}{a: int, b: string}", ($this->varType)($object));
     }
 
@@ -76,6 +79,7 @@ final class VarTypeTest extends TestCase
         $object = new class {
             public array $a = [1, 2, 3];
             public object $b;
+
             public function __construct()
             {
                 $this->b = new class {
@@ -83,7 +87,7 @@ final class VarTypeTest extends TestCase
                 };
             }
         };
-        $className = get_class($object);
+        $className = $object::class;
         $nestedClassName = get_class($object->b);
         $this->assertSame("{$className}{a: array<int>, b: {$nestedClassName}{c: string}}", ($this->varType)($object));
     }
@@ -107,7 +111,7 @@ final class VarTypeTest extends TestCase
     public function testComplexStructure(): void
     {
         $user = new FakeUser();
-        $user->name = "Jane Doe";
+        $user->name = 'Jane Doe';
         $user->age = 28;
         $user->roles = ['admin', 'editor'];
         $complexStructure = [
@@ -115,9 +119,9 @@ final class VarTypeTest extends TestCase
             'settings' => [
                 'theme' => 'dark',
                 'notifications' => true,
-                'limits' => [10, 20, 30]
+                'limits' => [10, 20, 30],
             ],
-            'metadata' => null
+            'metadata' => null,
         ];
         $this->assertSame('array{user: Koriym\VarType\FakeUser{name: string, age: int, roles: array<string>}, settings: array{theme: string, notifications: bool, limits: array<int>}, metadata: null}', ($this->varType)($complexStructure));
     }

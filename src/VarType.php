@@ -4,9 +4,24 @@ declare(strict_types=1);
 
 namespace Koriym\VarType;
 
+use function array_keys;
+use function array_unique;
+use function count;
+use function get_object_vars;
+use function gettype;
+use function implode;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_null;
+use function is_object;
+use function is_string;
+use function range;
+
 final class VarType
 {
-    static public function dump($value): void
+    public static function dump($value): void
     {
         echo (new self())($value);
     }
@@ -15,11 +30,13 @@ final class VarType
     {
         if (is_array($value)) {
             return $this->getArrayType($value);
-        } elseif (is_object($value)) {
-            return $this->getObjectType($value);
-        } else {
-            return $this->getScalarType($value);
         }
+
+        if (is_object($value)) {
+            return $this->getObjectType($value);
+        }
+
+        return $this->getScalarType($value);
     }
 
     private function getArrayType(array $array): string
@@ -42,15 +59,16 @@ final class VarType
 
         if ($isAssociative) {
             return 'array{' . implode(', ', $types) . '}';
-        } else {
-            $uniqueTypes = array_unique($types);
-            return 'array<' . implode('|', $uniqueTypes) . '>';
         }
+
+        $uniqueTypes = array_unique($types);
+
+        return 'array<' . implode('|', $uniqueTypes) . '>';
     }
 
     private function getObjectType(object $object): string
     {
-        $className = get_class($object);
+        $className = $object::class;
         $properties = [];
 
         foreach (get_object_vars($object) as $key => $value) {
@@ -60,31 +78,42 @@ final class VarType
 
         if (empty($properties)) {
             return $className;
-        } else {
-            return "{$className}{" . implode(', ', $properties) . '}';
         }
+
+        return "{$className}{" . implode(', ', $properties) . '}';
     }
 
     private function getScalarType($value): string
     {
         if (is_int($value)) {
             return 'int';
-        } elseif (is_float($value)) {
-            return 'float';
-        } elseif (is_bool($value)) {
-            return 'bool';
-        } elseif (is_string($value)) {
-            return 'string';
-        } elseif (is_null($value)) {
-            return 'null';
-        } else {
-            return gettype($value);
         }
+
+        if (is_float($value)) {
+            return 'float';
+        }
+
+        if (is_bool($value)) {
+            return 'bool';
+        }
+
+        if (is_string($value)) {
+            return 'string';
+        }
+
+        if (is_null($value)) {
+            return 'null';
+        }
+
+        return gettype($value);
     }
 
     private function isAssociativeArray(array $array): bool
     {
-        if (empty($array)) return false;
+        if (empty($array)) {
+            return false;
+        }
+
         return array_keys($array) !== range(0, count($array) - 1);
     }
 }
