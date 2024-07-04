@@ -72,32 +72,10 @@ VarType uses the following syntax to represent different types:
 
 3. **Detailed Type Information**: While PHP's built-in functions can provide basic type information, VarType offers much more detailed type representations, including object-like arrays and array shapes.
 
-4. **Easy Integration**: VarType can be easily integrated into existing projects to enhance type information without requiring significant changes to your codebase.
+4. **Debugging Aid**: Quickly understand the structure of complex variables, including nested object-like arrays and array shapes.
 
-5. **Debugging Aid**: Quickly understand the structure of complex variables, including nested object-like arrays and array shapes.
-
-6. **Documentation**: Generate precise type information for APIs or function parameters, improving code readability and maintainability.
-
-## Static Analysis Tool Compatibility
-
-VarType generates type strings that are compatible with popular PHP static analysis tools:
-
-- **Psalm**: Use VarType's output in Psalm's `@var`, `@param`, and `@return` annotations for enhanced type checking.
-- **PHPStan**: Leverage VarType's detailed type information to improve PHPStan's analysis capabilities.
-
-Example:
-
-```php
-/**
- * @param array{user: array{name: string, age: int}} $data
- * @return void
- */
-function processUser(array $data): void {
-    // PHPStan and Psalm can now provide better type inference and error detection
-}
-```
+5. **Documentation**: Generate precise type information for APIs or function parameters, improving code readability and maintainability.
 
 ---
 
 VarType - Unleash the full potential of PHP type information!
-
