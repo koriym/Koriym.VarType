@@ -17,7 +17,7 @@ VarType is a powerful PHP library that generates detailed type information from 
 Install VarType using Composer:
 
 ```bash
-composer require koriym/var-type
+composer require --dev koriym/var-type
 ```
 
 ## Usage
