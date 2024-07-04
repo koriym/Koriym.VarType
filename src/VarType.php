@@ -50,11 +50,8 @@ final class VarType
         /** @psalm-suppress  MixedAssignment */
         foreach ($array as $key => $value) {
             $valueType = $this->__invoke($value);
-            if ($isAssociative) {
-                $types[] = "{$key}: {$valueType}";
-            } else {
-                $types[] = $valueType;
-            }
+            $typeRepresentation = $isAssociative ? "{$key}: {$valueType}" : $valueType;
+            $types[] = $typeRepresentation;
         }
 
         if ($isAssociative) {
