@@ -13,7 +13,7 @@
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.8",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.6.19"
     },
     "autoload": {
         "psr-4": {
