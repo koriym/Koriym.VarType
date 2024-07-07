@@ -1,5 +1,7 @@
 # VarType
+[![Continuous Integration](https://github.com/koriym/Koriym.VarType/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/koriym/Koriym.VarType/actions/workflows/continuous-integration.yml)
 
+<img src="https://koriym.github.io/Koriym.VarType/logo.jpg" alt="var type logo">
 VarType is a powerful PHP library that generates detailed type information from PHP variables, with a focus on producing "object-like array" and "array shape" representations. It's designed to enhance static analysis capabilities and improve IDE autocompletion and type inference.
 
 ## Features
